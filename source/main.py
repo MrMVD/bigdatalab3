@@ -41,6 +41,24 @@ top_paid = spark.sql("""
 """)
 top_paid.show()
 
+# Гистограмма
+top_paid_pd = top_paid.toPandas()
+division = top_paid_pd['Division'].tolist()
+base_salary = top_paid_pd["Base_Salary"].astype(float).tolist()
+
+plt.figure(figsize=(12, 6))
+plt.bar(division, base_salary, color='skyblue')
+plt.title("Top Paid Divisions by Base Salary", fontsize=16)
+plt.ylabel("Base Salary", fontsize=14)
+plt.xlabel("Division", fontsize=14)
+plt.xticks(rotation=5, ha='right') 
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+directory_path = "../images"
+os.makedirs(directory_path, exist_ok=True)
+plt.savefig(directory_path+"/"+"base_salary_by_division.png")
+
+
 print("Средний оклад по гендеру:")
 avg_salary_job = spark.sql("""
     SELECT Gender, AVG(CAST(Base_Salary AS DOUBLE)) AS AVG_Base_Salary
